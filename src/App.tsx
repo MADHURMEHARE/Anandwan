@@ -51,12 +51,18 @@ export default function App() {
     localStorage.setItem("anandwan_smart_cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Sync user session with LocalStorage
+  // Sync user session with LocalStorage and cookies
   useEffect(() => {
     if (userSession) {
       localStorage.setItem("anandwan_user_session", JSON.stringify(userSession));
+      if (userSession.token) {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + 7 * 24 * 60 * 60 * 1000);
+        document.cookie = `anandwan_jwt_token=${encodeURIComponent(userSession.token)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax; Secure`;
+      }
     } else {
       localStorage.removeItem("anandwan_user_session");
+      document.cookie = "anandwan_jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax; Secure";
     }
   }, [userSession]);
 

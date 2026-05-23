@@ -58,7 +58,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setIsLoadingUsers(true);
     setAdminErr("");
     try {
-      const response = await fetch(`/api/auth/users?requestorEmail=${encodeURIComponent("madhurmehare27@gmail.com")}`);
+      const headers: Record<string, string> = {};
+      if (userSession?.token) {
+        headers["Authorization"] = `Bearer ${userSession.token}`;
+      }
+      const response = await fetch(`/api/auth/users?requestorEmail=${encodeURIComponent("madhurmehare27@gmail.com")}`, {
+        headers
+      });
       if (response.ok) {
         const data = await response.json();
         setUsersList(data);
@@ -86,10 +92,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
     setAdminErr("");
     setSuccessMsg("");
+    
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (userSession?.token) {
+      headers["Authorization"] = `Bearer ${userSession.token}`;
+    }
+
     try {
       const response = await fetch("/api/auth/create-admin", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           requestorEmail: "madhurmehare27@gmail.com",
           email: newAdminEmail.trim(),
@@ -120,10 +132,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const handleToggleRole = async (targetEmail: string) => {
     setAdminErr("");
     setSuccessMsg("");
+
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (userSession?.token) {
+      headers["Authorization"] = `Bearer ${userSession.token}`;
+    }
+
     try {
       const response = await fetch("/api/auth/toggle-role", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           requestorEmail: "madhurmehare27@gmail.com",
           targetEmail

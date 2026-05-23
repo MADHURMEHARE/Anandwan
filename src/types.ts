@@ -57,6 +57,7 @@ export interface UserSession {
   address?: string;
   role: "admin" | "customer";
   smartCoins?: number;
+  token?: string;
 }
 
 export interface Order {
